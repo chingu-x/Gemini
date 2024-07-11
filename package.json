@@ -1,6 +1,6 @@
 {
   "name": "pair-prog-bot",
-  "type": "module",
+  "type": "commonjs",
   "version": "0.0.0",
   "description": "discord bot pairing together programmers",
   "main": "index.js",
