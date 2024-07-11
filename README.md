@@ -9,6 +9,8 @@ ___
 
 * `node index.js` to run the bot
 
+* When new commands are added, run `node deploy-commands.js.` This will update the server with the new changes. Only needed regarding commands.
+
 #### Dependencies
 * discord.js - 14.14.1
 * dotenv - 16.3.1
@@ -16,3 +18,7 @@ ___
 #### .env
 Your .env should contain the following:
 * `DISCORD_TOKEN = <your-discord-token>`
+* `CLIENT_ID = <your-client-id>`
+* `GUILD_ID = <your-server-id>`
+
+Token and Client ID can be found in the [Discord Developer Portal](https://discord.com/developers/)
