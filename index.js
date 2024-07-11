@@ -2,11 +2,11 @@
 const fs = require('node:fs');
 const path = require('node:path');
 require('dotenv').config()
+const token = process.env.DISCORD_TOKEN
 
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
 // New collection of commands for the client
 client.commands = new Collection()
 
@@ -32,8 +32,13 @@ for (const folder of commandFolders) {
   }
 }
 
+// When the client is ready, run this code (only once).
+client.once(Events.ClientReady, readyClient => {
+  console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+});
+
+// Slash command handler, if not a slash command - return
 client.on(Events.InteractionCreate, async interaction => {
-  // If the interaction is not a slash command - return
   if (!interaction.isChatInputCommand()) return;
   console.log(interaction)
 
@@ -57,13 +62,6 @@ client.on(Events.InteractionCreate, async interaction => {
 
 })
 
-// When the client is ready, run this code (only once).
-// The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
-// It makes some properties non-nullable.
-client.once(Events.ClientReady, readyClient => {
-  console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
 
 // Log in to Discord with your client's token
-const token = process.env.DISCORD_TOKEN
 client.login(token);
