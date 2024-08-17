@@ -84,8 +84,21 @@ const interactionCreateEvent = {
         // Move the user to the new voice channel
         await member.voice.setChannel(voiceChannel);
 
-        // Update the initial embed
         const textChannel = guild.channels.cache.get(TARGET_TEXT_CHANNEL_ID);
+        
+
+        // Create a new private thread in the text channel
+        const thread = await textChannel.threads.create({
+            name: `${member.user.username}'s Pair Programming`,
+            autoArchiveDuration: 60,
+            type: ChannelType.PrivateThread,
+            reason: 'Private thread for pair programming',
+        });
+
+        // Send a message to the thread, mentioning the user
+        await thread.send({ content: `Hello <@${member.id}>, this is your private thread for pair programming.` });
+
+        // Update the initial embed
         const messages = await textChannel.messages.fetch({ limit: 10 });
         const initialMessage = messages.find(msg => msg.embeds.length > 0 && msg.embeds[0].title === 'Chingu Pair Programming');
 
