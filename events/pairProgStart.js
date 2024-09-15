@@ -56,7 +56,7 @@ const interactionCreateEvent = {
 
         // Check if the user is in the target voice channel
         if (!member.voice.channel || member.voice.channel.id !== TARGET_VOICE_CHANNEL_ID) {
-            await interaction.reply({ content: `You need to be in the specified voice channel to sign up. Please join the voice channel <#${TARGET_VOICE_CHANNEL_ID}> and try again.`, ephemeral: true });
+            await interaction.reply({ content: `You need to be in <#${TARGET_VOICE_CHANNEL_ID}> to sign up, please join and try again.`, ephemeral: true });
             return;
         }
 
