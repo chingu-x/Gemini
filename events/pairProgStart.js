@@ -14,7 +14,7 @@ const readyEvent = {
         if (textChannel) {
             // Initial embed
             const initialEmbed = new EmbedBuilder()
-                .setColor('#6DE194')
+                .setColor('#39F90D')
                 .setTitle('Chingu Pair Programming')
                 .setDescription('Pending\n\nIn progress\n');
 
