@@ -1,14 +1,17 @@
-const { ChannelType, PermissionFlagsBits } = require('discord.js');
+const { ChannelType } = require('discord.js');
 const Airtable = require('airtable');
 require('dotenv').config();
 
 const airtableBaseID = process.env.AIRTABLE_BASE_ID;
 const airtableApiKey = process.env.AIRTABLE_API_KEY;
 const airtableTableName = process.env.AIRTABLE_TABLE_NAME;
-const textChannelID = process.env.TEXT_CHANNEL_ID; // The ID of the text channel where the private thread will be created
-const voiceHubID = process.env.VOICE_HUB; // The ID of the existing voice channel
+const textChannelID = process.env.TEXT_CHANNEL_ID;
+const voiceHubID = process.env.VOICE_HUB;
 
 const base = new Airtable({ apiKey: airtableApiKey }).base(airtableBaseID);
+
+const STATUS_PENDING = 'pending';
+const STATUS_IN_SESSION = 'in session';
 
 module.exports = {
     async checkForPairs(client) {
@@ -16,7 +19,7 @@ module.exports = {
             console.log('Checking for pairs...');
             // Check Airtable for users with the status of 'pending'
             const records = await base(airtableTableName).select({
-                filterByFormula: `{Status} = 'pending'`
+                filterByFormula: `{Status} = '${STATUS_PENDING}'`
             }).all();
 
             console.log(`Found ${records.length} pending users`);
@@ -63,7 +66,7 @@ module.exports = {
 
                     console.log(`Created thread ${thread.name}`);
 
-                    // Add users to the thread
+                    // Add users to the private thread
                     await thread.members.add(user1.fields.userID);
                     await thread.members.add(user2.fields.userID);
 
@@ -72,11 +75,11 @@ module.exports = {
 
                     // Update the status of the users in Airtable
                     await base(airtableTableName).update([
-                        { id: user1.id, fields: { Status: 'in session' } },
-                        { id: user2.id, fields: { Status: 'in session' } }
+                        { id: user1.id, fields: { Status: STATUS_IN_SESSION } },
+                        { id: user2.id, fields: { Status: STATUS_IN_SESSION } }
                     ]);
 
-                    console.log(`Updated status to 'in session' for users ${user1.fields['Discord Name']} and ${user2.fields['Discord Name']}`);
+                    console.log(`Updated status to ${STATUS_IN_SESSION} for users ${user1.fields['Discord Name']} and ${user2.fields['Discord Name']}`);
                 }
             }
         } catch (error) {
