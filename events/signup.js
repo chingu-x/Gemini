@@ -1,7 +1,7 @@
 const { ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle } = require('discord.js');
 const Airtable = require('airtable');
 require('dotenv').config();
-const { checkForPairs } = require('./pairing');
+const { checkForPairs } = require('./pairing.js');
 
 const lobbyVoiceChannelID = process.env.LOBBY_VOICE_CHANNEL_ID;
 const airtableBaseID = process.env.AIRTABLE_BASE_ID;
@@ -10,8 +10,11 @@ const airtableTableName = process.env.AIRTABLE_TABLE_NAME;
 
 const base = new Airtable({ apiKey: airtableApiKey }).base(airtableBaseID);
 
+const STATUS_IDLE = 'idle';
+const STATUS_PENDING = 'pending';
+
 module.exports = {
-    name: 'voiceStateUpdate',
+    name: 'signup',
     async execute(oldState, newState) {
         const voiceChannelID = lobbyVoiceChannelID;
         
@@ -32,7 +35,7 @@ module.exports = {
                             fields: {
                                 userID: userId,
                                 'Discord Name': user.tag,
-                                Status: 'idle'
+                                Status: STATUS_IDLE
                             }
                         }
                     ]);
@@ -67,7 +70,7 @@ module.exports = {
                                 try {
                                     await base(airtableTableName).update(record[0].id, {
                                         Difficulty: skillLevel,
-                                        Status: 'idle'
+                                        Status: STATUS_IDLE
                                     });
 
                                     await interaction.update({ content: `You selected: **${skillLevel}**. Do you want to sign up for pair programming?`, components: [] });
@@ -91,14 +94,14 @@ module.exports = {
                                         if (followUpInteraction.customId === 'yes') {
                                             try {
                                                 await base(airtableTableName).update(record[0].id, {
-                                                    Status: 'pending'
+                                                    Status: STATUS_PENDING
                                                 });
                                                 await followUpInteraction.update({ content: 'You have been signed up for pair programming!', components: [] });
 
                                                 // Check for pairs after setting status to pending
                                                 checkForPairs(interaction.client);
                                             } catch (error) {
-                                                console.error(`Failed to update status to pending for user ${user.tag}:`, error);
+                                                console.error(`Failed to update status to ${STATUS_PENDING} for user ${user.tag}:`, error);
                                             }
                                         } else if (followUpInteraction.customId === 'no') {
                                             await followUpInteraction.update({ content: 'Session terminated.', components: [] });
@@ -142,14 +145,14 @@ module.exports = {
                             if (interaction.customId === 'yes') {
                                 try {
                                     await base(airtableTableName).update(records[0].id, {
-                                        Status: 'pending'
+                                        Status: STATUS_PENDING
                                     });
                                     await interaction.update({ content: 'You have been signed up for pair programming!', components: [] });
 
                                     // Check for pairs after setting status to pending
                                     checkForPairs(interaction.client);
                                 } catch (error) {
-                                    console.error(`Failed to update status to pending for user ${user.tag}:`, error);
+                                    console.error(`Failed to update status to ${STATUS_PENDING} for user ${user.tag}:`, error);
                                 }
                             } else if (interaction.customId === 'no') {
                                 await interaction.update({ content: 'Session terminated.', components: [] });
@@ -161,6 +164,26 @@ module.exports = {
                 }
             } catch (error) {
                 console.error(`Failed to process user ${user.tag}:`, error);
+            }
+        } else if (oldState.channelId === voiceChannelID && !newState.channelId) {
+            // If the user leaves the lobby channel without 'in session' session status, update the status to 'idle'.
+            const user = oldState.member.user;
+            const userId = user.id;
+
+            try {
+                // Check if the user has a record in Airtable
+                const records = await base(airtableTableName).select({
+                    filterByFormula: `{userID} = '${userId}'`
+                }).firstPage();
+
+                if (records.length > 0 && records[0].fields.Status === STATUS_PENDING) {
+                    await base(airtableTableName).update(records[0].id, {
+                        Status: STATUS_IDLE
+                    });
+                    console.log(`Status for ${user.tag} (${user.id}) was updated to ${STATUS_IDLE} because they left the lobby channel without being paired.`);
+                }
+            } catch (error) {
+                console.error(`Failed to update status to ${STATUS_IDLE} for user ${user.tag}:`, error);
             }
         }
     }
