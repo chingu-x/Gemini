@@ -1,0 +1,86 @@
+const { ChannelType, PermissionFlagsBits } = require('discord.js');
+const Airtable = require('airtable');
+require('dotenv').config();
+
+const airtableBaseID = process.env.AIRTABLE_BASE_ID;
+const airtableApiKey = process.env.AIRTABLE_API_KEY;
+const airtableTableName = process.env.AIRTABLE_TABLE_NAME;
+const textChannelID = process.env.TEXT_CHANNEL_ID; // The ID of the text channel where the private thread will be created
+const voiceHubID = process.env.VOICE_HUB; // The ID of the existing voice channel
+
+const base = new Airtable({ apiKey: airtableApiKey }).base(airtableBaseID);
+
+module.exports = {
+    async checkForPairs(client) {
+        try {
+            console.log('Checking for pairs...');
+            // Check Airtable for users with the status of 'pending'
+            const records = await base(airtableTableName).select({
+                filterByFormula: `{Status} = 'pending'`
+            }).all();
+
+            console.log(`Found ${records.length} pending users`);
+
+            // Group users by skill level
+            const usersBySkillLevel = records.reduce((acc, record) => {
+                const skillLevel = record.fields.Difficulty;
+                if (!acc[skillLevel]) {
+                    acc[skillLevel] = [];
+                }
+                acc[skillLevel].push(record);
+                return acc;
+            }, {});
+
+            // Check for pairs with the same skill level
+            for (const skillLevel in usersBySkillLevel) {
+                const users = usersBySkillLevel[skillLevel];
+                if (users.length >= 2) {
+                    // Pair the first two users
+                    const [user1, user2] = users;
+
+                    console.log(`Pairing users ${user1.fields['Discord Name']} and ${user2.fields['Discord Name']} with skill level ${skillLevel}`);
+
+                    // Get the existing voice channel
+                    const guild = client.guilds.cache.first(); // Assuming the bot is in only one guild
+                    const voiceChannel = guild.channels.cache.get(voiceHubID);
+
+                    if (!voiceChannel) {
+                        console.error('Voice channel not found');
+                        return;
+                    }
+
+                    console.log(`Using existing voice channel ${voiceChannel.name}`);
+
+                    // Create a private thread in the specified text channel
+                    const textChannel = guild.channels.cache.get(textChannelID);
+                    const thread = await textChannel.threads.create({
+                        name: `Pair Programming - ${user1.fields['Discord Name']} & ${user2.fields['Discord Name']}`,
+                        autoArchiveDuration: 60,
+                        type: ChannelType.PrivateThread,
+                        invitable: false,
+                        reason: 'Pair Programming Session'
+                    });
+
+                    console.log(`Created thread ${thread.name}`);
+
+                    // Add users to the thread
+                    await thread.members.add(user1.fields.userID);
+                    await thread.members.add(user2.fields.userID);
+
+                    // Send information about the pair programming session in the thread
+                    await thread.send(`Welcome to your pair programming session!\n\n**Participants:**\n- <@${user1.fields.userID}>\n- <@${user2.fields.userID}>\n\n**Voice Channel:** ${voiceChannel.toString()}`);
+
+                    // Update the status of the users in Airtable
+                    await base(airtableTableName).update([
+                        { id: user1.id, fields: { Status: 'in session' } },
+                        { id: user2.id, fields: { Status: 'in session' } }
+                    ]);
+
+                    console.log(`Updated status to 'in session' for users ${user1.fields['Discord Name']} and ${user2.fields['Discord Name']}`);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to check for pairs:', error);
+        }
+    }
+};
