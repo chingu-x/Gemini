@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const airtableBaseID = process.env.AIRTABLE_BASE_ID;
 const airtableApiKey = process.env.AIRTABLE_API_KEY;
-const airtableTableName = process.env.AIRTABLE_TABLE_NAME;
+const airtableTableNameSessions = process.env.AIRTABLE_TABLE_NAME_SESSIONS;
 const textChannelID = process.env.TEXT_CHANNEL_ID;
 const voiceHubID = process.env.VOICE_HUB;
 
@@ -18,7 +18,7 @@ module.exports = {
         try {
             console.log('Checking for pairs...');
             // Check Airtable for users with the status of 'pending'
-            const records = await base(airtableTableName).select({
+            const records = await base(airtableTableNameSessions).select({
                 filterByFormula: `{Status} = '${STATUS_PENDING}'`
             }).all();
 
@@ -74,12 +74,13 @@ module.exports = {
                     await thread.send(`Welcome to your pair programming session!\n\n**Participants:**\n- <@${user1.fields.userID}>\n- <@${user2.fields.userID}>\n\n**Voice Channel:** ${voiceChannel.toString()}`);
 
                     // Update the status of the users in Airtable
-                    await base(airtableTableName).update([
+                    await base(airtableTableNameSessions).update([
                         { id: user1.id, fields: { Status: STATUS_IN_SESSION } },
                         { id: user2.id, fields: { Status: STATUS_IN_SESSION } }
                     ]);
 
                     console.log(`Updated status to ${STATUS_IN_SESSION} for users ${user1.fields['Discord Name']} and ${user2.fields['Discord Name']}`);
+
                 }
             }
         } catch (error) {
