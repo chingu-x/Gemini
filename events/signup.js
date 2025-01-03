@@ -6,7 +6,7 @@ const { checkForPairs } = require('./pairing.js');
 const lobbyVoiceChannelID = process.env.LOBBY_VOICE_CHANNEL_ID;
 const airtableBaseID = process.env.AIRTABLE_BASE_ID;
 const airtableApiKey = process.env.AIRTABLE_API_KEY;
-const airtableTableName = process.env.AIRTABLE_TABLE_NAME;
+const airtableTableNameSessions = process.env.AIRTABLE_TABLE_NAME_SESSIONS;
 
 const base = new Airtable({ apiKey: airtableApiKey }).base(airtableBaseID);
 
@@ -24,13 +24,13 @@ module.exports = {
 
             try {
                 // Check if the user has a record in Airtable
-                const records = await base(airtableTableName).select({
+                const records = await base(airtableTableNameSessions).select({
                     filterByFormula: `{userID} = '${userId}'`
                 }).firstPage();
 
                 if (records.length === 0) {
                     // User is not in the table, create a new record
-                    const record = await base(airtableTableName).create([
+                    const record = await base(airtableTableNameSessions).create([
                         {
                             fields: {
                                 userID: userId,
@@ -68,7 +68,7 @@ module.exports = {
                             if (interaction.customId === 'select_skill') {
                                 const skillLevel = interaction.values[0];
                                 try {
-                                    await base(airtableTableName).update(record[0].id, {
+                                    await base(airtableTableNameSessions).update(record[0].id, {
                                         Difficulty: skillLevel,
                                         Status: STATUS_IDLE
                                     });
@@ -93,7 +93,7 @@ module.exports = {
                                     followUpCollector.on('collect', async followUpInteraction => {
                                         if (followUpInteraction.customId === 'yes') {
                                             try {
-                                                await base(airtableTableName).update(record[0].id, {
+                                                await base(airtableTableNameSessions).update(record[0].id, {
                                                     Status: STATUS_PENDING
                                                 });
                                                 await followUpInteraction.update({ content: 'You have been signed up for pair programming!', components: [] });
@@ -144,7 +144,7 @@ module.exports = {
                         collector.on('collect', async interaction => {
                             if (interaction.customId === 'yes') {
                                 try {
-                                    await base(airtableTableName).update(records[0].id, {
+                                    await base(airtableTableNameSessions).update(records[0].id, {
                                         Status: STATUS_PENDING
                                     });
                                     await interaction.update({ content: 'You have been signed up for pair programming!', components: [] });
@@ -172,12 +172,12 @@ module.exports = {
 
             try {
                 // Check if the user has a record in Airtable
-                const records = await base(airtableTableName).select({
+                const records = await base(airtableTableNameSessions).select({
                     filterByFormula: `{userID} = '${userId}'`
                 }).firstPage();
 
                 if (records.length > 0 && records[0].fields.Status === STATUS_PENDING) {
-                    await base(airtableTableName).update(records[0].id, {
+                    await base(airtableTableNameSessions).update(records[0].id, {
                         Status: STATUS_IDLE
                     });
                     console.log(`Status for ${user.tag} (${user.id}) was updated to ${STATUS_IDLE} because they left the lobby channel without being paired.`);
