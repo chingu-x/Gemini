@@ -14,7 +14,7 @@ const STATUS_IDLE = 'idle';
 const STATUS_PENDING = 'pending';
 
 module.exports = {
-    name: 'signup',
+    name: 'voiceStateUpdate',
     async execute(oldState, newState) {
         const voiceChannelID = lobbyVoiceChannelID;
         
