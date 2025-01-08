@@ -1,6 +1,6 @@
 const { ChannelType } = require('discord.js');
 const Airtable = require('airtable');
-const { askForDifficulty } = require('./challenge');
+const { sendChallenges } = require('./challenge');
 require('dotenv').config();
 
 const airtableBaseID = process.env.AIRTABLE_BASE_ID;
@@ -82,7 +82,7 @@ module.exports = {
 
                     console.log(`Updated status to ${STATUS_IN_SESSION} for users ${user1.fields['Discord Name']} and ${user2.fields['Discord Name']}`);
 
-                    await askForDifficulty(thread, 'Please select the difficulty level.');
+                    await sendChallenges(thread);
 
                 }
             }
