@@ -42,7 +42,7 @@ module.exports = {
 
                     // Send DM to ask for skill level
                     const embed = new EmbedBuilder()
-                        .setTitle('Welcome to Chingu Pair Programming')
+                        .setTitle('Welcome to Chingu Pair Programming!')
                         .setDescription('Please select your skill level. This will help us pair you with someone of a similar skill level.');
 
                     const selectMenu = new StringSelectMenuBuilder()
@@ -96,7 +96,7 @@ module.exports = {
                                                 await base(airtableTableNameSessions).update(record[0].id, {
                                                     Status: STATUS_PENDING
                                                 });
-                                                await followUpInteraction.update({ content: 'You have been signed up for pair programming!', components: [] });
+                                                await followUpInteraction.update({ content: '🤝You have been signed up for pair programming!🤝', components: [] });
 
                                                 // Check for pairs after setting status to pending
                                                 checkForPairs(interaction.client);
@@ -122,7 +122,7 @@ module.exports = {
                     if (!userSkillLevel) {
                         // User has no skill level assigned, ask for skill level
                         const embed = new EmbedBuilder()
-                            .setTitle('Welcome to Chingu Pair Programming')
+                            .setTitle('Welcome to Chingu Pair Programming!')
                             .setDescription('Please select your skill level. This will help us pair you with someone of a similar skill level.');
 
                         const selectMenu = new StringSelectMenuBuilder()
@@ -176,7 +176,7 @@ module.exports = {
                                                     await base(airtableTableNameSessions).update(userRecord.id, {
                                                         Status: STATUS_PENDING
                                                     });
-                                                    await followUpInteraction.update({ content: 'You have been signed up for pair programming!', components: [] });
+                                                    await followUpInteraction.update({ content: '🤝You have been signed up for pair programming!🤝', components: [] });
 
                                                     // Check for pairs after setting status to pending
                                                     checkForPairs(interaction.client);
@@ -198,7 +198,7 @@ module.exports = {
                     } else {
                         // User is already in the table and has a skill level assigned
                         const embed = new EmbedBuilder()
-                            .setTitle('Welcome to Chingu Pair Programming')
+                            .setTitle('Welcome to Chingu Pair Programming!')
                             .setDescription('Do you want to sign up for pair programming?');
 
                         const yesButton = new ButtonBuilder()
@@ -227,7 +227,7 @@ module.exports = {
                                         await base(airtableTableNameSessions).update(userRecord.id, {
                                             Status: STATUS_PENDING
                                         });
-                                        await interaction.update({ content: 'You have been signed up for pair programming!', components: [] });
+                                        await interaction.update({ content: '# 🤝You have been signed up for pair programming!🤝', components: [] });
 
                                         // Check for pairs after setting status to pending
                                         checkForPairs(interaction.client);
