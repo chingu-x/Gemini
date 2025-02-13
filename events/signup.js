@@ -13,6 +13,12 @@ const base = new Airtable({ apiKey: airtableApiKey }).base(airtableBaseID);
 const STATUS_IDLE = 'idle';
 const STATUS_PENDING = 'pending';
 
+const DEVELOPER_ROLE_ID = process.env.DEVELOPER_ROLE_ID;
+const DATA_SCIENTIST_ROLE_ID = process.env.DATA_SCIENTIST_ROLE_ID;
+const UI_UX_DESIGNER_ROLE_ID = process.env.UI_UX_DESIGNER_ROLE_ID;
+const SCRUM_MASTER_ROLE_ID = process.env.SCRUM_MASTER_ROLE_ID;
+const PRODUCT_OWNER_ROLE_ID = process.env.PRODUCT_OWNER_ROLE_ID;
+
 module.exports = {
     name: 'voiceStateUpdate',
     async execute(oldState, newState) {
@@ -21,6 +27,7 @@ module.exports = {
         if (!oldState.channelId && newState.channelId === voiceChannelID) {
             const user = newState.member.user;
             const userId = user.id;
+            const member = newState.member;
 
             try {
                 // Check if the user has a record in Airtable
@@ -30,15 +37,26 @@ module.exports = {
 
                 if (records.length === 0) {
                     // User is not in the table, create a new record
-                    const record = await base(airtableTableNameSessions).create([
-                        {
-                            fields: {
-                                userID: userId,
-                                'Discord Name': user.tag,
-                                Status: STATUS_IDLE
-                            }
-                        }
-                    ]);
+                    const fields = {
+                        userID: userId,
+                        'Discord Name': user.tag,
+                        Status: STATUS_IDLE
+                    };
+
+                    // Check for roles and assign in Airtable
+                    if (member.roles.cache.has(DEVELOPER_ROLE_ID)) {
+                        fields.Role = 'Developer';
+                    } else if (member.roles.cache.has(DATA_SCIENTIST_ROLE_ID)) {
+                        fields.Role = 'Developer';
+                    } else if (member.roles.cache.has(UI_UX_DESIGNER_ROLE_ID)) {
+                        fields.Role = 'Designer';
+                    } else if (member.roles.cache.has(SCRUM_MASTER_ROLE_ID)) {
+                        fields.Role = 'Scrum Master';
+                    } else if (member.roles.cache.has(PRODUCT_OWNER_ROLE_ID)) {
+                        fields.Role = 'Product Owner';
+                    }
+
+                    const record = await base(airtableTableNameSessions).create([{ fields }]);
 
                     // Send DM to ask for skill level
                     const embed = new EmbedBuilder()
@@ -50,8 +68,8 @@ module.exports = {
                         .setPlaceholder('Select a skill level')
                         .addOptions([
                             { label: 'Basic', value: 'Basic' },
-                            { label: 'Intermediate', value: 'Intermediate' },
-                            { label: 'Advanced', value: 'Advanced' },
+                            // { label: 'Intermediate', value: 'Intermediate' },
+                            // { label: 'Advanced', value: 'Advanced' },
                         ]);
 
                     const row = new ActionRowBuilder().addComponents(selectMenu);
