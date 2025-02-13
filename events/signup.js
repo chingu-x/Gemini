@@ -51,9 +51,9 @@ module.exports = {
                     } else if (member.roles.cache.has(UI_UX_DESIGNER_ROLE_ID)) {
                         fields.Role = 'Designer';
                     } else if (member.roles.cache.has(SCRUM_MASTER_ROLE_ID)) {
-                        fields.Role = 'Scrum Master';
+                        fields.Role = 'Agile Leader';
                     } else if (member.roles.cache.has(PRODUCT_OWNER_ROLE_ID)) {
-                        fields.Role = 'Product Owner';
+                        fields.Role = 'Agile Leader';
                     }
 
                     const record = await base(airtableTableNameSessions).create([{ fields }]);
