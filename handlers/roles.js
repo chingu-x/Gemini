@@ -1,0 +1,15 @@
+require('dotenv').config();
+
+const DEVELOPER_ROLE_ID = process.env.DEVELOPER_ROLE_ID;
+const DATA_SCIENTIST_ROLE_ID = process.env.DATA_SCIENTIST_ROLE_ID;
+const UI_UX_DESIGNER_ROLE_ID = process.env.UI_UX_DESIGNER_ROLE_ID;
+const SCRUM_MASTER_ROLE_ID = process.env.SCRUM_MASTER_ROLE_ID;
+const PRODUCT_OWNER_ROLE_ID = process.env.PRODUCT_OWNER_ROLE_ID;
+
+module.exports = {
+    DEVELOPER_ROLE_ID,
+    DATA_SCIENTIST_ROLE_ID,
+    UI_UX_DESIGNER_ROLE_ID,
+    SCRUM_MASTER_ROLE_ID,
+    PRODUCT_OWNER_ROLE_ID
+};
