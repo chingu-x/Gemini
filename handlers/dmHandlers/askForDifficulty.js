@@ -28,11 +28,7 @@ async function askForDifficulty(user, record, base, airtableTableNameSessions, S
             // Check for pairs after setting status to pending
             checkForPairs(difficultyInteraction.client);
         } catch (error) {
-            if (error.statusCode === 422 && error.error === 'INVALID_MULTIPLE_CHOICE_OPTIONS') {
-                console.warn(`Ignoring error: ${error.message}`);
-            } else {
-                console.error(`Failed to update difficulty for user ${user.tag}:`, error);
-            }
+                console.error(`Failed to update difficulty for user ${user.tag}:`, error);  
         }
     });
 }

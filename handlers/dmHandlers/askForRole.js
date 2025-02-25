@@ -22,6 +22,9 @@ async function askForRole(user, record, base, airtableTableNameSessions, STATUS_
             await base(airtableTableNameSessions).update(record[0].id, {
                 Role: selectedRole
             });
+
+            roleCollector.stop();
+
             await askForDifficulty(user, record, base, airtableTableNameSessions, STATUS_PENDING, checkForPairs, roleInteraction);
         } catch (error) {
             console.error(`Failed to update role for user ${user.tag}:`, error);
