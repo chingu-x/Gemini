@@ -35,17 +35,17 @@ function createAdvancedButton() {
         .setStyle(ButtonStyle.Danger);
 }
 
-function createYesButton() {
+function createSignupButton() {
     return new ButtonBuilder()
         .setCustomId('yes')
-        .setLabel('Yes')
+        .setLabel('Signup')
         .setStyle(ButtonStyle.Primary);
 }
 
-function createNoButton() {
+function createLeaveButton() {
     return new ButtonBuilder()
         .setCustomId('no')
-        .setLabel('No')
+        .setLabel('Leave')
         .setStyle(ButtonStyle.Danger);
 }
 
@@ -55,6 +55,6 @@ module.exports = {
     createBasicButton,
     createIntermediateButton,
     createAdvancedButton,
-    createYesButton,
-    createNoButton
+    createSignupButton,
+    createLeaveButton
 };

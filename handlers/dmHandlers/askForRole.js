@@ -4,8 +4,8 @@ const { askForDifficulty } = require('../dmHandlers/askForDifficulty.js');
 
 async function askForRole(user, record, base, airtableTableNameSessions, STATUS_PENDING, checkForPairs, interaction) {
     const roleEmbed = new EmbedBuilder()
-        .setTitle('Select Your Role')
-        .setDescription('Please select the role you want to be assigned for this pairing session.');
+        .setTitle('Are you a Developer or an Agile Leader? :grey_question::question::grey_question:')
+        .setDescription('Please select the role you want to be assigned, for this pairing session.');
 
     const developerButton = createDeveloperButton();
     const agileLeaderButton = createAgileLeaderButton();
