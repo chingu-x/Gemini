@@ -11,14 +11,14 @@ function createAgileLeaderButton() {
     return new ButtonBuilder()
         .setCustomId('Agile Leader')
         .setLabel('Agile Leader')
-        .setStyle(ButtonStyle.Primary);
+        .setStyle(ButtonStyle.Success);
 }
 
 function createBasicButton() {
     return new ButtonBuilder()
         .setCustomId('Basic')
         .setLabel('Basic')
-        .setStyle(ButtonStyle.Primary);
+        .setStyle(ButtonStyle.Success);
 }
 
 function createIntermediateButton() {
@@ -32,7 +32,7 @@ function createAdvancedButton() {
     return new ButtonBuilder()
         .setCustomId('Advanced')
         .setLabel('Advanced')
-        .setStyle(ButtonStyle.Primary);
+        .setStyle(ButtonStyle.Danger);
 }
 
 function createYesButton() {

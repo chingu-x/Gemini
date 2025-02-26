@@ -1,27 +1,41 @@
-# pair-prog-bot
+# Gemini
 
-#### pair-prog-bot is a discord bot made for Chingu
+#### Gemini is a discord bot made for Chingu
 ___
 
 #### How to run
-* `npm install` to install the dependencies 
-* You also need to set your bot token in a `.env` file, and pass it in through the `token` variable
-
-* `node index.js` to run the bot
-
-* When new commands are added, run `node deploy-commands.js.` This will update the server with the new changes. Only needed regarding commands.
+1. `npm install` to install dependencies 
+2. Set up environment variables:
+    * Create an `.env` file in the root directory of your project.
+    * Add the following environment variables to `.env` file:<br>
+    Token and Client ID can be found in the [Discord Developer Portal](https://discord.com/developers/)<br>
+    `DISCORD_TOKEN = <your-discord-token>`<br>
+    `CLIENT_ID = <your-client-id>`<br>
+    `GUILD_ID = <your-server-id>`<br>
+    `LOBBY_VOICE_CHANNEL_ID = <your-lobby-voice-channel-id>`<br>
+    `VOICE_HUB = <your-voice-hub-id>`<br>
+    `TEXT_CHANNEL_ID = <your-text-channel-id>`<br>
+    `AIRTABLE_BASE_ID = <your-airtable-base-id>`<br>
+    `AIRTABLE_API_KEY = <your-airtable-api-key>`<br>
+    `AIRTABLE_TABLE_NAME_SESSIONS = <your-airtable-table-name-sessions>`<br>
+    `AIRTABLE_TABLE_NAME_CHALLENGES = <your-airtable-table-name-challenges>`<br>
+    `DEVELOPER_ROLE_ID = <your-developer-role-id>`<br>
+    `DATA_SCIENTIST_ROLE_ID = <your-data-scientist-role-id>`<br>
+    `UI_UX_DESIGNER_ROLE_ID = <your-ui-ux-designer-role-id>`<br>
+    `SCRUM_MASTER_ROLE_ID = <your-scrum-master-role-id>`<br>
+    `PRODUCT_OWNER_ROLE_ID = <your-product-owner-role-id>`<br>
+3. `node index.js` to run the bot
+4. When new commands are added, run `node deploy-commands.js.` This will update the server with the new changes. Only needed regarding commands. As of right now, this bot has no commands, so it's not neccessary to use. 
+#### Dev server
+1. `npm run dev` to start development server
 
 #### Dependencies
-* discord.js - 14.14.1
-* dotenv - 16.3.1
+* airtable - ^0.12.2
+* discord.js - ^14.15.3
+* dotenv - ^16.4.5
 
-#### .env
-Your .env should contain the following:
-* `DISCORD_TOKEN = <your-discord-token>`
-* `CLIENT_ID = <your-client-id>`
-* `GUILD_ID = <your-server-id>`
-
-Token and Client ID can be found in the [Discord Developer Portal](https://discord.com/developers/)
+#### Dev Dependencies
+* nodemon - ^3.1.4
 
 ### Development
 #### Branch naming
