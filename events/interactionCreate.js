@@ -1,15 +1,10 @@
 const { Events } = require('discord.js');
-const { handleChallengeSelection } = require('./challenge');
 
 module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {
 		if (!interaction.isStringSelectMenu()) return;
 
-        if (interaction.customId === 'select_challenge') {
-            console.log('Handling challenge selection interaction');
-            await handleChallengeSelection(interaction);
-        }
 		if (!interaction.isChatInputCommand()) return;
 
 		const command = interaction.client.commands.get(interaction.commandName);
