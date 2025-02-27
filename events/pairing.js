@@ -66,10 +66,18 @@ module.exports = {
                         await thread.members.add(user2.fields.userID);
 
                         // Send information about the pair programming session in the thread
-                        await thread.send(`Welcome to your pair programming session!\n\n**Participants:**
-                            \n- <@${user1.fields.userID}>\n- <@${user2.fields.userID}>
-                            \nIf you need a voice channel, one of you can just join ${voiceChannel.toString()}. This will generate a channel for you.
-                            \nPlease select a challenge from the dropdown menu below to get started, but please first discuss with each other which challenge you want to do. As soon as someone selects a challenge, the challenge will be locked in and you can start working on it. Good luck!`);
+                        // DO NOT TOUCH THE FORMATING BELOW. I KNOW IT LOOKS BAD, BUT IT WILL NOT RENDER PROPERLY IF YOU CHANGE IT.
+                        await thread.send(`
+                            # Welcome to your Pair Challenge Session!
+                            ### __Participants:__
+                            * <@${user1.fields.userID}>
+                            * <@${user2.fields.userID}>
+### __Instructions__
+                            1. Join ${voiceChannel.toString()} to create a voice channel you can use to talk and share your screens while doing the Challenge.
+                            2. Look at the list below and discuss what challenge you want to do.
+                            3. Select the challenge from the dropdown menu below.
+                            ### Good luck! :four_leaf_clover:
+                            `);
 
                         // Update the status of the users in Airtable
                         await base(airtableTableNameSessions).update([
