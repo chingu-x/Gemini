@@ -1,6 +1,6 @@
-# Gemini
+# Parity
 
-#### Gemini is a discord bot made for Chingu
+#### Parity is a discord bot made for Chingu Pair Challenges
 ___
 
 #### How to run
